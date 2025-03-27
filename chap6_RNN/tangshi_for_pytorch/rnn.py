@@ -45,7 +45,12 @@ class RNN_model(nn.Module):
         # here you need to define the "self.rnn_lstm"  the input size is "embedding_dim" and the output size is "lstm_hidden_dim"
         # the lstm should have two layers, and the  input and output tensors are provided as (batch, seq, feature)
         # ???
-
+        self.rnn_lstm = nn.LSTM(
+            input_size=self.word_embedding_dim,
+            hidden_size=self.lstm_dim,
+            num_layers=2,
+            batch_first=True
+        )
 
 
         ##########################################
@@ -61,6 +66,12 @@ class RNN_model(nn.Module):
         # here you need to put the "batch_input"  input the self.lstm which is defined before.
         # the hidden output should be named as output, the initial hidden state and cell state set to zero.
         # ???
+        # 初始化隐状态和 cell 状态（2 层，每层一个状态）
+        h0 = torch.zeros(2, 1, self.lstm_dim)  # [num_layers, batch, hidden_size]
+        c0 = torch.zeros(2, 1, self.lstm_dim)
+        
+        # 前向传播 LSTM
+        output, _ = self.rnn_lstm(batch_input, (h0, c0))  # output: [1, seq_len, lstm_dim]
 
 
 
